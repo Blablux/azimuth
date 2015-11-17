@@ -9,7 +9,6 @@ Python programming.
 ## Required modules
 
 + PIL
-+ sys
 + os.path
 + argparse
 
@@ -32,4 +31,5 @@ __Optional arguments:__
 
 ## Side Note
 
-Faustus is minor NPC from the video game _Legacy of Kain_.
+Faustus is minor NPC from the video games
+[Legacy of Kain](https://en.wikipedia.org/wiki/Legacy_of_Kain).
