@@ -3,8 +3,8 @@
 Faustus is a small python script to automatically crop mobile screenshots to
 remove the notification bar and the virtual buttons.
 
-The script doesn't do much right now, as it is more a sandbox for (re)learning
-Python programming.
+The script doesn't do much right now, as it is more a sandbox for me to
+(re)learn Python programming.
 
 ## Required modules
 
@@ -16,7 +16,7 @@ Python programming.
 
 __Usage:__
 
-    crop.py [-h] [-v] [-u U] [-l L] image
+    crop.py [-h] [-v] [-u U] [-l L] image [image ...]
 
 __Positional arguments:__
 
