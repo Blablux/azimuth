@@ -2,7 +2,7 @@
 
 # This script is used to crop mobile screenshots from their upper and lower
 # margin, leaving only the application visible.
-# Required modules: Image (for obvious reasons), sys for arguments parsing
+# Required modules: Image (for obvious reasons), argparse for arguments parsing
 # and os for filename manipulation.
 from PIL import Image
 import os.path, argparse
@@ -25,10 +25,9 @@ for filename, elem in enumerate(results.image):
 
     # Cropping image
     im = Image.open(elem)
-    lower_margin = im.size[1] - results.l
     # HINT: crop(left,up,right,down)
-    region = im.crop( (0,results.u,im.size[0],lower_margin) )
+    region = im.crop( (0,results.u,im.size[0],im.size[1] - results.l) )
     newfilename = name + '.cropped' + ext
     region.save(newfilename)
     #DEBUG:
-    #print "new file name " + newfilename
+    #print "new filename " + newfilename
