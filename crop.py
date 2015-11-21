@@ -10,9 +10,9 @@ import os.path, argparse
 parser = argparse.ArgumentParser(version='0.1')
 parser.add_argument('image', nargs='+')
 parser.add_argument('-u', default=75, type=int,
-                    help='height of the notification area')
+                    help='Set the height of the notification area (defaults to 75)')
 parser.add_argument('-l', default=144, type=int,
-                    help='height of the virtual buttons area')
+                    help='Set the height of the virtual buttons area (defaults to 144)')
 results = parser.parse_args()
 
 # Check if an image (jpg or png for the sake of simplicity) is provided
