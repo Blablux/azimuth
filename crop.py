@@ -1,33 +1,51 @@
 #!/usr/bin/python
+"""This script is used to crop mobile screenshots from their upper and lower
+    margin, leaving only the application visible. Require modules `PIL`,
+    `argparse` and `os`.
 
-# This script is used to crop mobile screenshots from their upper and lower
-# margin, leaving only the application visible.
-# Required modules: Image (for obvious reasons), argparse for arguments parsing
-# and os for filename manipulation.
+"""
 from PIL import Image
 import os.path, argparse
 
-parser = argparse.ArgumentParser(version='0.1')
+parser = argparse.ArgumentParser(description=__doc__, version='0.1')
 parser.add_argument('image', nargs='+')
-parser.add_argument('-u', default=75, type=int,
+parser.add_argument('-u', '--upper', default=75, type=int,
                     help='Set the height of the notification area (defaults to 75)')
-parser.add_argument('-l', default=144, type=int,
+parser.add_argument('-l', '--lower', default=144, type=int,
                     help='Set the height of the virtual buttons area (defaults to 144)')
-results = parser.parse_args()
+parser.add_argument('-i', '--ignore', choices=['up', 'down', 'both', 'none'],
+                    default='none',
+                    help='Ignore none, upper, lower or both margins (overrides custom heights)')
+args = parser.parse_args()
 
 # Check if an image (jpg or png for the sake of simplicity) is provided
-for filename, elem in enumerate(results.image):
-    if os.path.isfile(elem) is False:
-        parser.error("The file %s does not exist!" % elem)
-    name, ext = os.path.splitext(elem)
+for f, e in enumerate(args.image):
+    if os.path.isfile(e) is False:
+        parser.error("The file %s does not exist!" % e)
+    name, ext = os.path.splitext(e)
     if ext != '.png' and ext != '.jpg':
-        parser.error("The file %s is not an image!" % elem)
+        parser.error("The file %s is not an image!" % e)
+
+    # Calculating cropping box
+    if args.ignore:
+        if args.ignore == 'up' or args.ignore == 'both':
+            print "ignoring upper margin"
+            u = 0
+        else:
+            u = args.upper
+        if args.ignore == 'down' or args.ignore == 'both':
+            print "ignoring lower margin"
+            l = 0
+        else:
+            l = args.lower
 
     # Cropping image
-    im = Image.open(elem)
+    im = Image.open(e)
+
     # HINT: crop(left,up,right,down)
-    region = im.crop( (0,results.u,im.size[0],im.size[1] - results.l) )
+    r = im.crop( (0,u,im.size[0],im.size[1] - l) )
     newfilename = name + '.cropped' + ext
-    region.save(newfilename)
-    #DEBUG:
-    #print "new filename " + newfilename
+    r.save(newfilename)
+    # DEBUG:
+    # print "new filename :" + newfilename
+    # print "boxed : 0 " + str(u) + " " + str(im.size[0]) + " " + str(im.size[1] - l)
