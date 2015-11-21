@@ -22,9 +22,11 @@ args = parser.parse_args()
 for f, e in enumerate(args.image):
     if os.path.isfile(e) is False:
         parser.error("The file %s does not exist!" % e)
+        exit(1)
     name, ext = os.path.splitext(e)
     if ext != '.png' and ext != '.jpg':
         parser.error("The file %s is not an image!" % e)
+        exit(1)
 
     # Calculating cropping box
     if args.ignore:
