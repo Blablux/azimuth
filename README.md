@@ -16,7 +16,8 @@ The script doesn't do much right now, as it is more a sandbox for me to
 
 __Usage:__
 
-    crop.py [-h] [-v] [-u U] [-l L] image [image ...]
+usage: crop.py [-h] [-v] [-u UPPER] [-l LOWER] [-i {up,down,both,none}]
+               image [image ...]
 
 __Positional arguments:__
 
@@ -24,10 +25,17 @@ __Positional arguments:__
 
 __Optional arguments:__
 
-    -h, --help     show this help message and exit  
-    -v, --version  show program's version number and exit  
-    -u U           height of the notification area  
-    -l L           height of the virtual buttons area
+-h, --help            show this help message and exit
+-v, --version         show program's version number and exit
+-u UPPER, --upper UPPER
+                      Set the height of the notification area (defaults to
+                      75)
+-l LOWER, --lower LOWER
+                      Set the height of the virtual buttons area (defaults
+                      to 144)
+-i {up,down,both,none}, --ignore {up,down,both,none}
+                      Ignore none, upper, lower or both margins (overrides
+                      custom heights)
 
 ## Side Note
 
