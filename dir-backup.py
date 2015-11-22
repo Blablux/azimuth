@@ -16,8 +16,8 @@ from sh import rsync
 parser = argparse.ArgumentParser(
     description=__doc__)
 
-parser.add_argument("BACKUPDIR", help="Specify the directory to backup.")
-parser.add_argument("DESTINATIONDIR",
+parser.add_argument("backupdir", help="Specify the directory to backup.")
+parser.add_argument("destinationdir",
                     help="Specify the directory where the backup is stored.")
 parser.add_argument("-t", "--trash",
                     help="Delete unnecessary files and empty the trash.",
@@ -32,9 +32,9 @@ parser.add_argument("-q", "--quiet",
 
 args = parser.parse_args()
 
-# Define variables
-backupdir = args.BACKUPDIR
-destinationdir = args.DESTINATIONDIR
+# Redefine variables
+sourcedir = args.backupdir
+targetdir = args.destinationdir
 logfile = args.logfile
 
 # Logging
@@ -58,7 +58,7 @@ def check_dir_exist(os_dir):
         logging.error("{} does not exist.".format(os_dir))
         exit(1)
 
-check_dir_exist(backupdir)
+check_dir_exist(sourcedir)
 
 # Delete function
 def delete_files(ending, indirectory):
@@ -77,7 +77,7 @@ def delete_files(ending, indirectory):
 if args.trash:
     file_types = ["tmp", "bak", "dmp"]
     for file_type in file_types:
-        delete_files(file_type, backupdir)
+        delete_files(file_type, sourcedir)
     # Empty trash can
     try:
         rmtree(os.path.expanduser("~/.local/share/Trash/files"))
@@ -92,17 +92,17 @@ if args.exclude:
         exclusions.append("--exclude={}".format(argument))
 
 
-# Do the actual backup
+# Rsync files
 logging.info("Starting rsync.")
 if logfile and exclusions and args.quiet:
-    rsync("-auhv", exclusions, "--log-file={}".format(logfile), backupdir, destinationdir)
+    rsync("-auhv", exclusions, "--log-file={}".format(logfile), sourcedir, targetdir)
 elif logfile and exclusions:
-    print(rsync("-auhv", exclusions, "--log-file={}".format(logfile), backupdir, destinationdir))
+    print(rsync("-auhv", exclusions, "--log-file={}".format(logfile), sourcedir, targetdir))
 elif args.quiet and exclusions:
-    rsync("-av", exclusions, backupdir, destinationdir)
+    rsync("-av", exclusions, sourcedir, targetdir)
 elif logfile and args.quiet:
-    rsync("-av", "--log-file={}".format(logfile), backupdir, destinationdir)
+    rsync("-av", "--log-file={}".format(logfile), sourcedir, targetdir)
 else:
-    rsync("-av", backupdir, destinationdir)
+    rsync("-av", sourcedir, targetdir)
 
 logging.info("done.")
