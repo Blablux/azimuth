@@ -11,7 +11,6 @@ import argparse
 import logging
 from sh import rsync
 
-
 # Parse arguments
 parser = argparse.ArgumentParser(
     description=__doc__)
@@ -51,7 +50,6 @@ if not args.quiet:
     consoleHandler.setFormatter(logFormatter)
     rootLogger.addHandler(consoleHandler)
 
-
 # Directory exist-check
 def check_dir_exist(os_dir):
     if not os.path.exists(os_dir):
@@ -72,7 +70,6 @@ def delete_files(ending, indirectory):
                     logging.warning("Could not delete {}/{}".format(r, files))
                     pass
 
-
 # Delete actual files first
 if args.trash:
     file_types = ["tmp", "bak", "dmp"]
@@ -90,7 +87,6 @@ exclusions = []
 if args.exclude:
     for argument in args.exclude:
         exclusions.append("--exclude={}".format(argument))
-
 
 # Rsync files
 logging.info("Starting rsync.")
