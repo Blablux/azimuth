@@ -5,7 +5,8 @@
 
 """
 from PIL import Image
-import os.path, argparse
+import os.path
+import argparse
 
 parser = argparse.ArgumentParser(description=__doc__, version='0.1')
 parser.add_argument('image', nargs='+')
