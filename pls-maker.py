@@ -9,6 +9,10 @@ from itertools import ifilter
 import os.path
 import re
 import argparse
+from mutagen.flac import FLAC
+from mutagen.oggvorbis import OggVorbis
+from mutagen.mp3 import MP3
+from mutagen.id3 import ID3
 
 parser = argparse.ArgumentParser(
     description=__doc__)
@@ -38,15 +42,34 @@ def create_playlist(filenames):
     entry = (
         'File%d=%s\n'
         'Title%d=%s\n'
-        'Length%d=-1\n\n') # TODO: get length
+        #'Length%d=-1\n\n') # TODO: get length
+        'Length%d=%s\n\n') # TODO: get length
     for filename in filenames:
         num += 1
-        title = os.path.splitext(os.path.basename(filename))[0]
-        yield entry % (num, filename, num, title, num)
+        title, length = get_file_info(filename)
+        #title = os.path.splitext(os.path.basename(filename))[0]
+        #yield entry % (num, filename, num, title, num)
+        yield entry % (num, filename, num, title, num, length)
 
     yield (
         'NumberOfEntries=%d\n'
         'Version=2\n') % num
+
+def get_file_info(filename):
+    # Get needed information from file
+    name, ext = os.path.splitext(os.path.basename(filename))
+    if ext.lower() == '.mp3':
+        track = MP3(filename)
+        data = ID3(filename)
+    elif ext.lower() == '.ogg':
+        track = OggVorbis(filename)
+        data = ID3(filename)
+    elif ext.lower() == '.flac':
+        track = FLAC(filename)
+        data = ID3(filename)
+
+    return data["TIT2"].text[0], track.info.length
+    # TODO: support flac & ogg
 
 if __name__ == '__main__':
     filenames = find_files(args.source)
