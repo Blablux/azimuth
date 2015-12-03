@@ -38,17 +38,13 @@ def create_playlist(filenames):
     # Create a PLS playlist from filenames.
     yield '[playlist]\n\n'
     num = 0
-
     entry = (
         'File%d=%s\n'
         'Title%d=%s\n'
-        #'Length%d=-1\n\n') # TODO: get length
-        'Length%d=%s\n\n') # TODO: get length
+        'Length%d=%s\n\n')
     for filename in filenames:
         num += 1
         title, length = get_file_info(filename)
-        #title = os.path.splitext(os.path.basename(filename))[0]
-        #yield entry % (num, filename, num, title, num)
         yield entry % (num, filename, num, title, num, length)
 
     yield (
@@ -61,15 +57,14 @@ def get_file_info(filename):
     if ext.lower() == '.mp3':
         track = MP3(filename)
         data = ID3(filename)
+        title = data["TIT2"].text[0]
     elif ext.lower() == '.ogg':
         track = OggVorbis(filename)
-        data = ID3(filename)
+        title = str(track.get("title")).strip('[u"]')
     elif ext.lower() == '.flac':
         track = FLAC(filename)
-        data = ID3(filename)
-
-    return data["TIT2"].text[0], track.info.length
-    # TODO: support flac & ogg
+        title = str(track.get("title")).strip('[u"]')
+    return title, int(track.info.length)
 
 if __name__ == '__main__':
     filenames = find_files(args.source)
