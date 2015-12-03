@@ -14,8 +14,7 @@ from mutagen.oggvorbis import OggVorbis
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3
 
-parser = argparse.ArgumentParser(
-    description=__doc__)
+parser = argparse.ArgumentParser(description=__doc__, version='0.1')
 
 parser.add_argument("source", help="Specify the file / directory to add.")
 parser.add_argument("output",
@@ -26,12 +25,12 @@ parser.add_argument("-a", "--absolute",
 
 args = parser.parse_args()
 
-PATTERN = re.compile('\.(mp3|ogg|flac)$', re.I)
+pattern = re.compile('\.(mp3|ogg|flac)$', re.I)
 
 def find_files(path):
     # Return all matching files beneath the path.
     for r, d, f in os.walk(os.path.abspath(path)):
-        for fn in ifilter(PATTERN.search, f):
+        for fn in ifilter(pattern.search, f):
             yield os.path.join(r, fn)
 
 def create_playlist(filenames):
@@ -67,6 +66,16 @@ def get_file_info(filename):
     return title, int(track.info.length)
 
 if __name__ == '__main__':
+
+    if str(args.source[:1]) == '~':
+        source = os.path.expanduser(args.source)
+    else:
+        source = os.path.abspath(args.source)
+    if os.path.isfile(args.source):
+        path = os.path.dirname(source)
+    else:
+        path = source
+
     filenames = find_files(args.source)
 
     playlist = open(args.output,"w")
