@@ -29,11 +29,11 @@ pattern = re.compile('\.(mp3|ogg|flac)$', re.I)
 
 def find_files(path):
     # Return all matching files beneath the path.
-    for r, d, f in os.walk(os.path.abspath(path)):
+    for r, d, f in os.walk(normalize(path)):
         for fn in ifilter(pattern.search, f):
             yield os.path.join(r, fn)
 
-def create_playlist(filenames):
+def create_playlist(filenames, playlist):
     # Create a PLS playlist from filenames.
     yield '[playlist]\n\n'
     num = 0
@@ -44,42 +44,40 @@ def create_playlist(filenames):
     for filename in filenames:
         num += 1
         title, length = get_file_info(filename)
-        yield entry % (num, filename, num, title, num, length)
+        filepath=os.path.relpath(normalize(filename), normalize(os.path.dirname(playlist)))
+        yield entry % (num, filepath, num, title, num, length)
 
     yield (
         'NumberOfEntries=%d\n'
         'Version=2\n') % num
 
-def get_file_info(filename):
+def get_file_info(f):
     # Get needed information from file
-    name, ext = os.path.splitext(os.path.basename(filename))
+    name, ext = os.path.splitext(os.path.basename(f))
     if ext.lower() == '.mp3':
-        track = MP3(filename)
-        data = ID3(filename)
+        track = MP3(f)
+        data = ID3(f)
         title = data["TIT2"].text[0]
     elif ext.lower() == '.ogg':
-        track = OggVorbis(filename)
+        track = OggVorbis(f)
         title = str(track.get("title")).strip('[u"]')
     elif ext.lower() == '.flac':
-        track = FLAC(filename)
+        track = FLAC(f)
         title = str(track.get("title")).strip('[u"]')
     return title, int(track.info.length)
 
-if __name__ == '__main__':
+def normalize(p):
+    if str(p[:1]) == '~':
+        return os.path.expanduser(p)
+    else:
+        return os.path.abspath(p)
 
-    if str(args.source[:1]) == '~':
-        source = os.path.expanduser(args.source)
-    else:
-        source = os.path.abspath(args.source)
-    if os.path.isfile(args.source):
-        path = os.path.dirname(source)
-    else:
-        path = source
+if __name__ == '__main__':
 
     filenames = find_files(args.source)
 
     playlist = open(args.output,"w")
 
-    map(playlist.write, create_playlist(filenames))
+    map(playlist.write, create_playlist(filenames, args.output))
 
     playlist.close()
