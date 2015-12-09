@@ -33,7 +33,7 @@ def find_files(path):
         for fn in ifilter(pattern.search, f):
             yield os.path.join(r, fn)
 
-def create_playlist(filenames, playlist, absolute):
+def create_playlist(f, p, a):
     # Create a PLS playlist from filenames.
     yield '[playlist]\n\n'
     num = 0
@@ -41,13 +41,13 @@ def create_playlist(filenames, playlist, absolute):
         'File%d=%s\n'
         'Title%d=%s\n'
         'Length%d=%s\n\n')
-    for filename in filenames:
+    for filename in f:
         num += 1
         title, length = get_file_info(filename)
-        if absolute == True:
+        if a == True:
             filepath = normalize(filename)
         else:
-            filepath = os.path.relpath(normalize(filename), normalize(os.path.dirname(playlist)))
+            filepath = os.path.relpath(normalize(filename), normalize(os.path.dirname(p)))
         yield entry % (num, filepath, num, title, num, length)
 
     yield (
@@ -76,11 +76,14 @@ def normalize(p):
         return os.path.abspath(p)
 
 if __name__ == '__main__':
-
-    filenames = find_files(args.source)
+    if os.path.isdir(args.source):
+        filenames = find_files(args.source)
+    elif os.path.isfile(args.source):
+        filenames = [args.source]
+    else:
+        exit('Error: invalid music path provided')
 
     playlist = open(args.output,"w")
-
     map(playlist.write, create_playlist(filenames, args.output, args.absolute))
 
     playlist.close()
