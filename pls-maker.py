@@ -8,7 +8,7 @@ Specify a path to be recursively searched for music files.
 from itertools import ifilter
 import os.path
 import re
-import argparse
+import argparse # TODO : Use pathlib ?
 from mutagen.flac import FLAC
 from mutagen.oggvorbis import OggVorbis
 from mutagen.mp3 import MP3
@@ -33,7 +33,7 @@ def find_files(path):
         for fn in ifilter(pattern.search, f):
             yield os.path.join(r, fn)
 
-def create_playlist(filenames, playlist):
+def create_playlist(filenames, playlist, absolute):
     # Create a PLS playlist from filenames.
     yield '[playlist]\n\n'
     num = 0
@@ -44,7 +44,10 @@ def create_playlist(filenames, playlist):
     for filename in filenames:
         num += 1
         title, length = get_file_info(filename)
-        filepath=os.path.relpath(normalize(filename), normalize(os.path.dirname(playlist)))
+        if absolute == True:
+            filepath = normalize(filename)
+        else:
+            filepath = os.path.relpath(normalize(filename), normalize(os.path.dirname(playlist)))
         yield entry % (num, filepath, num, title, num, length)
 
     yield (
@@ -78,6 +81,6 @@ if __name__ == '__main__':
 
     playlist = open(args.output,"w")
 
-    map(playlist.write, create_playlist(filenames, args.output))
+    map(playlist.write, create_playlist(filenames, args.output, args.absolute))
 
     playlist.close()
