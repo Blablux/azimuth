@@ -6,9 +6,9 @@ Specify a path to be recursively searched for music files.
 """
 
 from itertools import ifilter
-import os.path
+import os.path # TODO : Use pathlib ?
 import re
-import argparse # TODO : Use pathlib ?
+import argparse
 from mutagen.flac import FLAC
 from mutagen.oggvorbis import OggVorbis
 from mutagen.mp3 import MP3
@@ -63,10 +63,10 @@ def get_file_info(f):
         title = data["TIT2"].text[0]
     elif ext.lower() == '.ogg':
         track = OggVorbis(f)
-        title = str(track.get("title")).strip('[u"]')
+        title = str(track.get("title")).strip('[u"\']')
     elif ext.lower() == '.flac':
         track = FLAC(f)
-        title = str(track.get("title")).strip('[u"]')
+        title = str(track.get("title")).strip('[u"\']')
     return title, int(track.info.length)
 
 def normalize(p):
@@ -83,7 +83,8 @@ if __name__ == '__main__':
     else:
         exit('Error: invalid music path provided')
 
-    playlist = open(args.output,"w")
-    map(playlist.write, create_playlist(filenames, args.output, args.absolute))
-
-    playlist.close()
+#    playlist = open(args.output,"w")
+#    map(playlist.write, create_playlist(filenames, args.output, args.absolute))
+content = create_playlist(filenames,args.output, args.absolute)
+print('\n'.join(str(x) for x in content))
+#    playlist.close()
