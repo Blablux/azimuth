@@ -22,9 +22,7 @@ parser.add_argument("output",
 parser.add_argument("-a", "--absolute",
                     help="Write absolute paths instead of relatives.",
                     action="store_true")
-
 args = parser.parse_args()
-
 pattern = re.compile('\.(mp3|ogg|flac)$', re.I)
 
 def find_files(path):
@@ -35,8 +33,18 @@ def find_files(path):
 
 def create_playlist(f, p, a):
     # Create a PLS playlist from filenames.
-    yield '[playlist]\n\n'
+    playlist = '[playlist]\n\n'
     num = 0
+    # if playlist already exists, add it to the content
+    if os.path.isfile(p):
+        pls = open(normalize(p), "r")
+        content = pls.read().split('\n\n')
+        pls.close()
+        del content[0]
+        del content[-1]
+        for e in content:
+            playlist += str(e + '\n\n')
+            num+=1
     entry = (
         'File%d=%s\n'
         'Title%d=%s\n'
@@ -48,11 +56,11 @@ def create_playlist(f, p, a):
             filepath = normalize(filename)
         else:
             filepath = os.path.relpath(normalize(filename), normalize(os.path.dirname(p)))
-        yield entry % (num, filepath, num, title, num, length)
-
-    yield (
+        playlist += entry % (num, filepath, num, title, num, length)
+    playlist += (
         'NumberOfEntries=%d\n'
         'Version=2\n') % num
+    return playlist
 
 def get_file_info(f):
     # Get needed information from file
@@ -82,9 +90,8 @@ if __name__ == '__main__':
         filenames = [args.source]
     else:
         exit('Error: invalid music path provided')
-
-#    playlist = open(args.output,"w")
-#    map(playlist.write, create_playlist(filenames, args.output, args.absolute))
-content = create_playlist(filenames,args.output, args.absolute)
-print('\n'.join(str(x) for x in content))
-#    playlist.close()
+    # create the playlist BEFORE opening the file in write mode!
+    content = create_playlist(filenames, args.output, args.absolute)
+    playlist = open(args.output,"w")
+    playlist.write(content)
+    playlist.close()
