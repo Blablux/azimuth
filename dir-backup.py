@@ -50,16 +50,18 @@ if not args.quiet:
     consoleHandler.setFormatter(logFormatter)
     rootLogger.addHandler(consoleHandler)
 
-# Directory exist-check
+
 def check_dir_exist(os_dir):
+    # Directory exist-check
     if not os.path.exists(os_dir):
         logging.error("{} does not exist.".format(os_dir))
         exit(1)
 
 check_dir_exist(sourcedir)
 
-# Delete function
+
 def delete_files(ending, indirectory):
+    # Delete function
     for r, d, f in os.walk(indirectory):
         for files in f:
             if files.endswith("." + ending):
@@ -91,9 +93,11 @@ if args.exclude:
 # Rsync files
 logging.info("Starting rsync.")
 if logfile and exclusions and args.quiet:
-    rsync("-auhv", exclusions, "--log-file={}".format(logfile), sourcedir, targetdir)
+    rsync("-auhv", exclusions, "--log-file={}".format(logfile), sourcedir,
+          targetdir)
 elif logfile and exclusions:
-    print(rsync("-auhv", exclusions, "--log-file={}".format(logfile), sourcedir, targetdir))
+    print(rsync("-auhv", exclusions, "--log-file={}".format(logfile),
+          sourcedir, targetdir))
 elif args.quiet and exclusions:
     rsync("-av", exclusions, sourcedir, targetdir)
 elif logfile and args.quiet:
