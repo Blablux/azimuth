@@ -11,12 +11,15 @@ import argparse
 parser = argparse.ArgumentParser(description=__doc__, version='0.1')
 parser.add_argument('image', nargs='+')
 parser.add_argument('-u', '--upper', default=75, type=int,
-                    help='Set the height of the notification area (defaults to 75)')
+                    help='Set the height of the notification area \
+                    (defaults to 75)')
 parser.add_argument('-l', '--lower', default=144, type=int,
-                    help='Set the height of the virtual buttons area (defaults to 144)')
+                    help='Set the height of the virtual buttons area \
+                    (defaults to 144)')
 parser.add_argument('-i', '--ignore', choices=['up', 'down', 'both', 'none'],
                     default='none',
-                    help='Ignore none, upper, lower or both margins (overrides custom heights)')
+                    help='Ignore none, upper, lower or both margins \
+                    (overrides custom heights)')
 args = parser.parse_args()
 
 # Check if an image (jpg or png for the sake of simplicity) is provided
@@ -46,9 +49,6 @@ for f, e in enumerate(args.image):
     im = Image.open(e)
 
     # HINT: crop(left,up,right,down)
-    r = im.crop( (0,u,im.size[0],im.size[1] - l) )
+    r = im.crop((0, u, im.size[0], im.size[1] - l))
     newfilename = name + '.cropped' + ext
     r.save(newfilename)
-    # DEBUG:
-    # print "new filename :" + newfilename
-    # print "boxed : 0 " + str(u) + " " + str(im.size[0]) + " " + str(im.size[1] - l)
