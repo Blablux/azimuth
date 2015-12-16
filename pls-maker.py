@@ -6,7 +6,7 @@ Specify a path to be recursively searched for music files.
 """
 
 from itertools import ifilter
-import os.path # TODO : Use pathlib ?
+import os.path  # TODO : Use pathlib ?
 import re
 import argparse
 from mutagen.flac import FLAC
@@ -25,11 +25,13 @@ parser.add_argument("-a", "--absolute",
 args = parser.parse_args()
 pattern = re.compile('\.(mp3|ogg|flac)$', re.I)
 
+
 def find_files(path):
     # Return all matching files beneath the path.
     for r, d, f in os.walk(normalize(path)):
         for fn in ifilter(pattern.search, f):
             yield os.path.join(r, fn)
+
 
 def create_playlist(f, p, a):
     # Create a PLS playlist from filenames.
@@ -44,7 +46,7 @@ def create_playlist(f, p, a):
         del content[-1]
         for e in content:
             playlist += str(e + '\n\n')
-            num+=1
+            num += 1
     entry = (
         'File%d=%s\n'
         'Title%d=%s\n'
@@ -52,15 +54,17 @@ def create_playlist(f, p, a):
     for filename in f:
         num += 1
         title, length = get_file_info(filename)
-        if a == True:
+        if a:
             filepath = normalize(filename)
         else:
-            filepath = os.path.relpath(normalize(filename), normalize(os.path.dirname(p)))
+            filepath = os.path.relpath(normalize(filename),
+                                       normalize(os.path.dirname(p)))
         playlist += entry % (num, filepath, num, title, num, length)
     playlist += (
         'NumberOfEntries=%d\n'
         'Version=2\n') % num
     return playlist
+
 
 def get_file_info(f):
     # Get needed information from file
@@ -77,6 +81,7 @@ def get_file_info(f):
         title = str(track.get("title")).strip('[u"\']')
     return title, int(track.info.length)
 
+
 def normalize(p):
     if str(p[:1]) == '~':
         return os.path.expanduser(p)
@@ -92,6 +97,6 @@ if __name__ == '__main__':
         exit('Error: invalid music path provided')
     # create the playlist BEFORE opening the file in write mode!
     content = create_playlist(filenames, args.output, args.absolute)
-    playlist = open(args.output,"w")
+    playlist = open(args.output, "w")
     playlist.write(content)
     playlist.close()
