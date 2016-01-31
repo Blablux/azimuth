@@ -64,12 +64,15 @@ class MSParser:
                 del self.serial[self.serial.index(name)]
 
     def GetNextPage(self):
+        """Parse for the next page or returns nothing"""
         try:
             self.nextPage = self.content.select('.next a')[0]['href']
         except:
             self.nextPage = None
 
     def GetPage(self):
+        """Downloads the image and save it to the temporary folder, then calls
+        the next page"""
         self.OpenResource(self.nextPage)
         img = self.content.select('img#manga-page')
         if img == []:
@@ -95,6 +98,7 @@ class MSParser:
         self.GetNextPage()
 
     def Initiate(self):
+        """Launches the full script"""
         self.OpenResource(self.url)
         self.GetSerials()
         self.SetEnv()
@@ -106,6 +110,7 @@ class MSParser:
             self.Compress(name)
 
     def Compress(self, name):
+        """Compress the temporary folder in the base forlder"""
         cbz = zipfile.ZipFile(os.path.join(self.baseLocation, name + '.cbz'),
                               'w')
         for r, d, f in os.walk(self.location):
