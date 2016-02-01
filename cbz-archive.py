@@ -76,16 +76,12 @@ class MSParser:
         the next page"""
         self.OpenResource(self.nextPage)
         img = self.content.select('img#manga-page')
-        if img == []:
-            print('Could not find image.')
-        else:
+        if img != []:
             try:
                 imgUri = img[0].get('src')
-                # Download the image.
                 res = requests.get(imgUri)
                 res.raise_for_status()
             except requests.exceptions.MissingSchema:
-                # skip this page
                 self.GetNextPage()
             # TODO: Do not download uneeded pages
             imageFile = open(os.path.join(self.location,
