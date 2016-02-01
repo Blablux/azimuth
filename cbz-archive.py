@@ -20,6 +20,7 @@ class MSParser:
         # DOC: Working directory
         self.tmpLocation = '/var/tmp'
         # These variables will be used later
+        self.serialUrl = []
         self.serialNm = []
         self.nextPage = ''
         self.location = ''
