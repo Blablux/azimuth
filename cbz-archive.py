@@ -20,8 +20,7 @@ class MSParser:
         # DOC: Working directory
         self.tmpLocation = '/var/tmp'
         # These variables will be used later
-        self.serial = []
-        self.serialUrl = []
+        self.serialNm = []
         self.nextPage = ''
         self.location = ''
 
@@ -44,14 +43,16 @@ class MSParser:
             for serial in self.serials:
                 if serial in a.get_text() and 'read' in a['href']:
                     self.serialUrl.append(a['href'])
-                    self.serial.append(a.strong.previous_element.string
-                                       .strip() + ' ' + a.strong.string.strip()
-                                       )
+                    self.serialNm.append(a.strong.previous_element.string
+                                         .strip() + ' ' +
+                                         a.strong.string.strip()
+                                         )
+        self.serial = list(self.serialNm)
 
     def SetEnv(self):
         """Checks for existing books and creates the directories to store the
         images if the book does not yet exist"""
-        for name in self.serial:
+        for index, name in reversed(list(enumerate(self.serialNm))):
             if not os.path.exists(os.path.join(self.baseLocation, name) +
                                   '.cbz'):
                 try:
@@ -60,8 +61,8 @@ class MSParser:
                     if exception.errno != errno.EEXIST:
                         raise
             else:
-                del self.serialUrl[self.serial.index(name)]
-                del self.serial[self.serial.index(name)]
+                del self.serialUrl[index]
+                del self.serial[index]
 
     def GetNextPage(self):
         """Parse for the next page or returns nothing"""
@@ -81,12 +82,10 @@ class MSParser:
             try:
                 imgUri = img[0].get('src')
                 # Download the image.
-                print('Downloading image %s...' % (imgUri))
                 res = requests.get(imgUri)
                 res.raise_for_status()
             except requests.exceptions.MissingSchema:
                 # skip this page
-                print('Image not found here')
                 self.GetNextPage()
             # TODO: Do not download uneeded pages
             imageFile = open(os.path.join(self.location,
@@ -118,5 +117,5 @@ class MSParser:
                 cbz.write(os.path.join(r, fn), arcname=fn,
                           compress_type=zipfile.ZIP_DEFLATED)
         cbz.close()
-        shutil.move(os.path.join(self.tmpLocation, name),
-                    os.path.expanduser('~/.local/share/Trash/files'))
+        print (fn + 'finished!')
+        shutil.rmtree(os.path.join(self.tmpLocation, name))
