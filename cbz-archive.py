@@ -5,6 +5,7 @@ import os.path
 import errno
 import zipfile
 import shutil
+import re
 
 
 class MSParser:
@@ -24,6 +25,10 @@ class MSParser:
         self.serialNm = []
         self.nextPage = ''
         self.location = ''
+        self.counter = 1
+        # DOC: some regex to filter pages
+        self.credit = re.compile('\d{2,}[a-z]\.(jpg|png)')
+        self.end = re.compile('\d{2,}\.jpg')
 
     def OpenLocal(self, resource):
         """Used for debugging purpose, when you don't want to hammer the
@@ -77,20 +82,30 @@ class MSParser:
         the next page"""
         self.OpenResource(self.nextPage)
         img = self.content.select('img#manga-page')
-        if img != []:
+        if img == []:
+            # DOC: if finished DL, remove last image when it matches 'end'
+            if self.end.match(os.path.basename(self.lastimage)):
+                shutil.rmtree(self.lastimage)
+        # DOC: image matching 'credit' are ignored
+        elif not self.credit.match(os.path.basename(img[0].get('src'))):
+            imgUri = img[0].get('src')
+            imgRoot, imgExt = os.path.splitext(imgUri)
+            if self.counter < 10:
+                filename = '0' + str(self.counter) + imgExt
+            else:
+                filename = str(self.counter) + imgExt
             try:
-                imgUri = img[0].get('src')
                 res = requests.get(imgUri)
                 res.raise_for_status()
             except requests.exceptions.MissingSchema:
                 self.GetNextPage()
             # TODO: Do not download uneeded pages
-            imageFile = open(os.path.join(self.location,
-                             os.path.basename(imgUri)),
-                             'wb')
+            imageFile = open(os.path.join(self.location, filename), 'wb')
             for chunk in res.iter_content(100000):
                 imageFile.write(chunk)
             imageFile.close()
+            self.lastimage = os.path.join(self.location, filename)
+            self.counter += 1
         self.GetNextPage()
 
     def Initiate(self):
