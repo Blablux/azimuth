@@ -130,3 +130,7 @@ class MSParser:
         cbz.close()
         print (fn + 'finished!')
         shutil.rmtree(os.path.join(self.tmpLocation, name))
+
+if __name__ == '__main__':
+    cbz = MSParser()
+    cbz.Initiate()
