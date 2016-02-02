@@ -2,7 +2,6 @@
 import requests
 import bs4
 import os.path
-import errno
 import zipfile
 import shutil
 import re
@@ -15,12 +14,12 @@ class MSParser:
         # DOC: URL of the site to fetch
         self.url = ""
         # DOC: List of the comic books to search.
-        self.serials = [""]
+        self.serials = []
         # DOC: Where to store the books
         self.baseLocation = os.path.expanduser('~/books')
         # DOC: Working directory
         self.tmpLocation = '/var/tmp'
-        # These variables will be used later
+        # DOC: These variables will be used later
         self.serialUrl = []
         self.serialNm = []
         self.nextPage = ''
@@ -59,13 +58,13 @@ class MSParser:
         """Checks for existing books and creates the directories to store the
         images if the book does not yet exist"""
         for index, name in reversed(list(enumerate(self.serialNm))):
-            if not os.path.exists(os.path.join(self.baseLocation, name) +
-                                  '.cbz'):
+            if not (os.path.exists(os.path.join(self.baseLocation, name) +
+                                   '.cbz') or os.path.join(self.tmpLocation,
+                                                           name)):
                 try:
                     os.makedirs(os.path.join(self.tmpLocation, name))
-                except OSError as exception:
-                    if exception.errno != errno.EEXIST:
-                        raise
+                except:
+                    raise
             else:
                 del self.serialUrl[index]
                 del self.serial[index]
