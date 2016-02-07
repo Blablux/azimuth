@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import requests
 import bs4
-import os.path
+import os
 import zipfile
 import shutil
 import re
@@ -24,7 +24,6 @@ class MSParser:
         self.serialNm = []
         self.nextPage = ''
         self.location = ''
-        self.counter = 1
         # DOC: some regex to filter pages
         self.credit = re.compile('\d{2,}[a-z]\.(jpg|png)')
         self.end = re.compile('\d{2,}\.jpg')
@@ -58,13 +57,13 @@ class MSParser:
         """Checks for existing books and creates the directories to store the
         images if the book does not yet exist"""
         for index, name in reversed(list(enumerate(self.serialNm))):
-            if not (os.path.exists(os.path.join(self.baseLocation, name) +
-                                   '.cbz') or os.path.join(self.tmpLocation,
-                                                           name)):
-                try:
-                    os.makedirs(os.path.join(self.tmpLocation, name))
-                except:
-                    raise
+            if not os.path.exists(os.path.join(self.baseLocation, name) +
+                                  '.cbz'):
+                if not os.path.exists(os.path.join(self.tmpLocation, name)):
+                    try:
+                        os.makedirs(os.path.join(self.tmpLocation, name))
+                    except:
+                        raise
             else:
                 del self.serialUrl[index]
                 del self.serial[index]
@@ -84,7 +83,7 @@ class MSParser:
         if img == []:
             # DOC: if finished DL, remove last image when it matches 'end'
             if self.end.match(os.path.basename(self.lastimage)):
-                shutil.rmtree(self.lastimage)
+                os.remove(self.lastimage)
         # DOC: image matching 'credit' are ignored
         elif not self.credit.match(os.path.basename(img[0].get('src'))):
             imgUri = img[0].get('src')
@@ -113,6 +112,7 @@ class MSParser:
         self.GetSerials()
         self.SetEnv()
         for name in self.serial:
+            self.counter = 1
             self.location = os.path.join(self.tmpLocation, name)
             self.nextPage = self.serialUrl[self.serial.index(name)]
             while self.nextPage:
