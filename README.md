@@ -13,7 +13,11 @@ The scripts are more a sandbox for me to (re)learn Python programming.
   Use `./PlsMaker.py -h` for help.
 - `CbzArchive.py` is a class to download some specific comic books and
 compress them as a comic book archive.
-- `RgbDmcConverter.py` is a class aimed at converting images (mostly pixel
+- `SrvBackup.py` (WIP) is a class for maintaining consistent backup of a server.
+It contains a simple `mysqldump` at this moment, but should include in the
+future a full website directory backup, config backup, and probably a image
+backup for RPi SDCards. 
+- `RgbDmcConverter.py` (WIP) is a class aimed at converting images (mostly pixel
 art) to [DMC](http://www.dmc.fr) colors for cross stitching.
 
 ## Side Note
