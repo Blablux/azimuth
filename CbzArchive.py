@@ -3,7 +3,6 @@ import requests
 import bs4
 import os
 import zipfile
-import shutil
 import re
 
 
@@ -129,7 +128,13 @@ class MSParser:
                           compress_type=zipfile.ZIP_DEFLATED)
         cbz.close()
         print (fn + 'finished!')
-        shutil.rmtree(os.path.join(self.tmpLocation, name))
+
+        def __del__(self):
+            for name in self.serial:
+                if os.path.exists(os.path.join(self.tmpLocation, name)):
+                    for r, d, f in os.path.join(self.tmpLocation, name):
+                        os.remove(os.path.join(r, f))
+                        os.rmdir(r)
 
 if __name__ == '__main__':
     cbz = MSParser()
