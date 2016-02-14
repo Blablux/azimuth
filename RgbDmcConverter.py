@@ -6,7 +6,7 @@ import bs4
 # import pprint
 
 
-class DMCConverter:
+class Dmc:
     """Class class aimed at converting images (mostly pixel
     art) to DMC colors for cross stitching."""
 
@@ -26,12 +26,15 @@ class DMCConverter:
         attribute"""
         for row in self.content.select('table.tableborder tr'):
             print (row)
-            cell = row.select('td')
-            self.table[cell[0].get_text()] = {'name': cell[1].get_text(),
-                                              'R': cell[2].get_text(),
-                                              'G': cell[2].get_text(),
-                                              'B': cell[3].get_text(),
-                                              'hex': cell[4].get_text()}
+            try:
+                cell = row.select('td')
+                self.table[cell[0].get_text()] = {'name': cell[1].get_text(),
+                                                  'R': cell[2].get_text(),
+                                                  'G': cell[2].get_text(),
+                                                  'B': cell[3].get_text(),
+                                                  'hex': cell[4].get_text()}
+            except IndexError:
+                pass
 
     def Initiate(self):
         """Launches the full script"""
@@ -39,7 +42,7 @@ class DMCConverter:
 
 
 if __name__ == '__main__':
-    dmc = DMCConverter()
+    dmc = Dmc()
     dmc.Initiate()
     # print dmc.content
     # pprint.pprint(dmc.table)
