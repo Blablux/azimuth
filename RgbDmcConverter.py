@@ -40,11 +40,8 @@ class Dmc:
             save = open(location, 'rw')
             save.write(self.table)
             save.close()
-        except OSError as e:
-            if isinstance(e, FileNotFoundError):
-                pass
-            else:
-                return False
+        except OSError:
+            return False
 
     def Initiate(self):
         """Launches the full script"""
