@@ -127,7 +127,6 @@ class MSParser:
                 cbz.write(os.path.join(r, fn), arcname=fn,
                           compress_type=zipfile.ZIP_DEFLATED)
         cbz.close()
-        print (fn + 'finished!')
 
         def __del__(self):
             for name in self.serial:
