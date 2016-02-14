@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import requests
 import bs4
+from PIL import Image
 # import os.path
 # import re
 # import pprint
@@ -40,12 +41,21 @@ class Dmc:
             save = open(location, 'rw')
             save.write(self.table)
             save.close()
-        except OSError:
-            return False
+        except OSError as e:
+            print ('Error opening the file ', location)
+            print (e)
+
+    def GetImgColors(self, location):
+        try:
+            img = Image.open(location, 'r')
+            self.colors = img.getcolors(256)
+        except OSError as e:
+            print ('Error opening the file ', location)
+            print (e)
 
     def Initiate(self):
         """Launches the full script"""
-        self.FetchOnline()
+        self.CreateDict()
 
 
 if __name__ == '__main__':
