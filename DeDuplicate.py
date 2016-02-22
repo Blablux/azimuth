@@ -34,6 +34,7 @@ for r, d, f in os.walk(directory):
             listFiles.append(os.path.join(r, f[j]))
             counterFiles += 1
         j += 1
+    # find dirs with too many files
     if len(f) > 20:
         counterNb += 1
         listNb[r] = len(f)
