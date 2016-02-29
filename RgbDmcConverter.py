@@ -2,9 +2,9 @@
 import requests
 import bs4
 from PIL import Image
-# import os.path
-# import re
-# import pprint
+import os.path
+# DEBUG:
+import pprint
 
 
 class Dmc:
@@ -15,13 +15,20 @@ class Dmc:
         # DOC: URL of the site to fetch
         self.table = {}
 
+    def Normalize(self, p):
+        """Normalize Unix paths"""
+        if str(p[:1]) == '~':
+            return os.path.expanduser(p)
+        else:
+            return os.path.abspath(p)
+
     def FetchOnline(self):
-        """Gets the remote page and load it in BeautifulSoup"""
-        res = requests.get('')
+        """Gets the remote page and load it in BeautifulSoup."""
+        res = requests.get()
         res.raise_for_status()
         self.content = bs4.BeautifulSoup(res.text)
         for row in self.content.select('table.tableborder tr'):
-            print (row)
+            # DEBUG: print (row)
             try:
                 cell = row.select('td')
                 self.CreateDict(cell)
@@ -29,6 +36,7 @@ class Dmc:
                 pass
 
     def CreateDict(self, cell):
+        """Subtask to create the supported colors table."""
         self.table[cell[0].get_text()] = {'name': cell[1].get_text(),
                                           'R': cell[2].get_text(),
                                           'G': cell[2].get_text(),
@@ -36,18 +44,24 @@ class Dmc:
                                           'hex': cell[4].get_text()}
 
     def SaveLocal(self, location):
-        self.FetchOnline()
+        """Save color palette to a file for further use"""
         try:
-            save = open(location, 'rw')
-            save.write(self.table)
+            save = open(self.Normalize(location), 'w')
+            save.write(str(self.table))
             save.close()
         except OSError as e:
             print ('Error opening the file ', location)
             print (e)
 
+    def FetchLocal(self, location):
+        """Load palette from a previously saved file"""
+        with open(self.Normalize(location), 'r') as table:
+            self.table = eval(table.read())
+
     def GetImgColors(self, location):
+        """List all colors from an image"""
         try:
-            img = Image.open(location, 'r')
+            img = Image.open(self.Normalize(location), 'r')
             self.colors = img.getcolors(256)
         except OSError as e:
             print ('Error opening the file ', location)
@@ -55,11 +69,10 @@ class Dmc:
 
     def Initiate(self):
         """Launches the full script"""
-        self.CreateDict()
+        self.GetImgColors()
+        pprint.pprint(self.colors)
 
 
 if __name__ == '__main__':
     dmc = Dmc()
     dmc.Initiate()
-    # print dmc.content
-    # pprint.pprint(dmc.table)
