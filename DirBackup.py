@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 """This script is used to rsync a source directory to a target directory, with
-    the option to exclude some files based on extension. Require modules
-    `shutil`, `sh`, `logging`, `argparse` and `os`.
-
+    the option to exclude some files based on extension.
 """
 
 import os
