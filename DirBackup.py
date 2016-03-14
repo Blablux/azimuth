@@ -49,16 +49,16 @@ if not args.quiet:
     rootLogger.addHandler(consoleHandler)
 
 
-def check_dir_exist(os_dir):
+def CheckDirExist(os_dir):
     # Directory exist-check
     if not os.path.exists(os_dir):
         logging.error("{} does not exist.".format(os_dir))
         exit(1)
 
-check_dir_exist(sourcedir)
+CheckDirExist(sourcedir)
 
 
-def delete_files(ending, indirectory):
+def DeleteFiles(ending, indirectory):
     # Delete function
     for r, d, f in os.walk(indirectory):
         for files in f:
@@ -74,7 +74,7 @@ def delete_files(ending, indirectory):
 if args.trash:
     file_types = ["tmp", "bak", "dmp"]
     for file_type in file_types:
-        delete_files(file_type, sourcedir)
+        DeleteFiles(file_type, sourcedir)
     # Empty trash can
     try:
         rmtree(os.path.expanduser("~/.local/share/Trash/files"))
