@@ -16,7 +16,7 @@ class Dmc:
         self.table = {}
         self.depth = 128
 
-    def Normalize(self, p):
+    def Normalize(p):
         """Normalize Unix paths"""
         if str(p[:1]) == '~':
             return os.path.expanduser(p)
