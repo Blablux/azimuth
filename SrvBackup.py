@@ -24,6 +24,7 @@ class SrvBackup:
             return os.path.abspath(p)
 
     def DbDump(self, user, password, database, host="localhost"):
+        """Do a mysqldump of a database and store it as an archive"""
         filestamp = time.strftime('%Y-%m-%d-%I:%M')
         os.popen("mysqldump -u %s -p%s -h %s -e --opt -c %s | gzip -c > %s.gz"
                  % (user, password, host, database,
