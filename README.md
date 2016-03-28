@@ -23,4 +23,4 @@ The scripts are more a sandbox for me to (re)learn Python programming.
   art) to [DMC](http://www.dmc.fr) colors for cross stitching.
 
 ## Side Note
-Faustus is minor NPC from the video games [Legacy of Kain](https://en.wikipedia.org/wiki/Legacy_of_Kain).
+Faustus is a minor NPC from the video games [Legacy of Kain](https://en.wikipedia.org/wiki/Legacy_of_Kain).
