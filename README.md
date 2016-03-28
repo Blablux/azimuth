@@ -1,5 +1,6 @@
-# Faustus
-Faustus is collection of small python scripts and classes that do various things.
+# Azimuth
+Azimuth is a collection of small python scripts and classes that do various
+things.
 
 The scripts are more a sandbox for me to (re)learn Python programming.
 
@@ -16,11 +17,10 @@ The scripts are more a sandbox for me to (re)learn Python programming.
 - `CbzArchive.py` is a class to download some specific comic books and
   compress them as a comic book archive.
 - `SrvBackup.py` (WIP) is a class for maintaining consistent backup of a server.
-  It contains a simple `mysqldump` at this moment, but should include in the
-  future a full website directory backup, config backup, and probably a image
-  backup for RPi SDCards.
-- `RgbDmcConverter.py` (WIP) is a class aimed at converting images (mostly pixel
-  art) to [DMC](http://www.dmc.fr) colors for cross stitching.
+- `RgbDmcConverter.py` (WIP) is a class aimed at converting images (mostly
+  pixel art) to [DMC](http://www.dmc.fr) colors for cross stitching.
 
-## Side Note
-Faustus is a minor NPC from the video games [Legacy of Kain](https://en.wikipedia.org/wiki/Legacy_of_Kain).
+  ## Side Note
+
+  Azimuth is the guardian of the pillar of _Dimension_ and a NPC from the video
+  games serie [Legacy of Kain](https://en.wikipedia.org/wiki/Legacy_of_Kain).
