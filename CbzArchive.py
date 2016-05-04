@@ -31,13 +31,13 @@ class MSParser:
         """Used for debugging purpose, when you don't want to hammer the
         remote site"""
         res = open(resource)
-        self.content = bs4.BeautifulSoup(res)
+        self.content = bs4.BeautifulSoup(res, "lxml")
 
     def OpenResource(self, resource):
         """Gets the remote page and load it in BeautifulSoup"""
         res = requests.get(resource)
         res.raise_for_status()
-        self.content = bs4.BeautifulSoup(res.text)
+        self.content = bs4.BeautifulSoup(res.text, "lxml")
 
     def GetSerials(self):
         """Checks in the front page if there is any comic book
