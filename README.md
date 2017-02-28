@@ -20,6 +20,8 @@ These scripts are more a sandbox for me to (re)learn Python programming.
 - `SrvBackup.py` (WIP) is a class for maintaining consistent backup of a server.
 - `RgbDmcConverter.py` (WIP) is a class aimed at converting images (mostly
   pixel art) to [DMC](http://www.dmc.fr) colors for cross stitching.
+- `XWingRandomizer.py` (WIP) is a script to randomize an X-Wing tabletop game
+  parameters a little bit for added fun.
 
 ## Side Note
 
