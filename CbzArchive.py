@@ -44,12 +44,16 @@ class MSParser:
         that we're looking for, and stores their name and URL"""
         for a in self.content.find_all('a', href=True):
             for serial in self.serials:
-                if serial in a.get_text() and 'read' in a['href']:
+                if serial in a.get_text() and '/r/' in a['href']:
                     self.serialUrl.append(a['href'])
                     self.serialNm.append(a.strong.previous_element.string
                                          .strip() + ' ' +
                                          a.strong.string.strip()
                                          )
+                    # LOG:
+                    print('Found ' + a.strong.previous_element.string
+                          .strip() + ' ' +
+                          a.strong.string.strip())
         self.serial = list(self.serialNm)
 
     def SetEnv(self):
@@ -64,6 +68,9 @@ class MSParser:
                     except:
                         raise
             else:
+                # LOG:
+                print('The file ' + self.serial[index] + ' already exists,'
+                      + ' skipping')
                 del self.serialUrl[index]
                 del self.serial[index]
 
@@ -86,7 +93,13 @@ class MSParser:
         # DOC: image matching 'credit' are ignored
         elif not self.credit.match(os.path.basename(img[0].get('src'))):
             imgUri = img[0].get('src')
+            if not imgUri[:4] == "http":
+                if imgUri[:2] == "//":
+                    imgUri = "http:" + imgUri
+                    # DEBUG:print("imgUri changed to " + imgUri)
+                # TODO: Add new cases as they show up
             imgRoot, imgExt = os.path.splitext(imgUri)
+            print("imgRoot = " + imgRoot)
             if self.counter < 10:
                 filename = '0' + str(self.counter) + imgExt
             else:
@@ -110,6 +123,7 @@ class MSParser:
         self.OpenResource(self.url)
         self.GetSerials()
         self.SetEnv()
+        # DEBUG: print '[%s]' % ', '.join(map(str, self.serial))
         for name in self.serial:
             self.counter = 1
             self.location = os.path.join(self.tmpLocation, name)
@@ -127,13 +141,16 @@ class MSParser:
                 cbz.write(os.path.join(r, fn), arcname=fn,
                           compress_type=zipfile.ZIP_DEFLATED)
         cbz.close()
+        # LOG:
+        print('The file ' + os.path.join(r, fn) + ' has been created!')
 
-        def __del__(self):
-            for name in self.serial:
-                if os.path.exists(os.path.join(self.tmpLocation, name)):
-                    for r, d, f in os.path.join(self.tmpLocation, name):
-                        os.remove(os.path.join(r, f))
-                        os.rmdir(r)
+    def __del__(self):
+        for name in self.serial:
+            if os.path.exists(os.path.join(self.tmpLocation, name)):
+                for r, d, f in os.path.join(self.tmpLocation, name):
+                    os.remove(os.path.join(r, f))
+                    os.rmdir(r)
+
 
 if __name__ == '__main__':
     cbz = MSParser()
