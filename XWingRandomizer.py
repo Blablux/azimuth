@@ -57,9 +57,13 @@ class XWingRandomizer():
                                                "Spice Runner"],
                                    "M3-A Interceptor": [
                                    "·Serissu",
+                                   "·Genesis Red",
                                    "·Laetin A'Shera",
+                                   "·Quinn Jast",
                                    "Tansarii Point Veteran",
+                                   "·Inaldra",
                                    "Cartel Spacer"
+                                   "·Sunny Bounder",
                                    ],
                                    "Jumpmaster": ["·Dengar",
                                                   "·Tel Trevura",
@@ -81,6 +85,10 @@ class XWingRandomizer():
                                               "·Moralo Eval",
                                               "·Latts Razzi",
                                               "Trandoshan slaver"],
+                                   "Scurrg H-6 Bomber": ["·Captain Nym",
+                                                         "·Sol Sixxa",
+                                                         "Lok Revenant",
+                                                         "Karthakk Pirate"],
                                    "Z-95": ["·N'dru Suhlak",
                                             "·Kaa'to Leeachos",
                                             "Black Sun Soldier",
@@ -191,6 +199,10 @@ class XWingRandomizer():
                                                       "Black Squadron Scout",
                                                       "Scarif Defender",
                                                       "Imperial Trainee"],
+                                      "TIE-Aggressor": ["·Lieutenant Kestal",
+                                                        "Onyx Squadron Escort",
+                                                        "·Double Edge",
+                                                        "Sienar Specialist"],
                                       "VT-49 Decimator": [
                                       "·Rear Admiral Chiraneau",
                                       "·Commander Kenkirk",
@@ -228,6 +240,12 @@ class XWingRandomizer():
                                                "·Esege Tuketu",
                                                "Guardian Squadron Pilot",
                                                "Warden Squadron Pilot"],
+                                    "Auzituck Gunship": [
+                                    "·Wullffwarro",
+                                    "·Lowhhrick",
+                                    "Wookie Liberator",
+                                    "Kashyyyk Defender"],
+                                    "Scurrg H-6 Bomber": ["·Captain Nym"],
                                     "Attack Shuttle": ["·Hera Syndula",
                                                        "·Sabine Wren",
                                                        "·Ezra Bridger",
@@ -281,7 +299,6 @@ class XWingRandomizer():
                                              "Tala Squadron Pilot",
                                              "Bandit Squadron Pilot"]}
                          }
-        # TODO: Add pilots for much more randomness
         self.factions = self.Database.keys()
         # DOC: Various data for maths
         self.nbOfPlayers = len(self.players)
@@ -343,6 +360,7 @@ class XWingRandomizer():
                   + " and must use " + self.bracket[i]["pilot"] + " ("
                   + self.bracket[i]["faction"] + " / "
                   + self.bracket[i]["ship"] + ")")
+
 
 if __name__ == '__main__':
     round = XWingRandomizer()
